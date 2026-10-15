@@ -24,7 +24,27 @@ npm run dev
 
 Open **http://localhost:3000** — you'll be redirected to the login page.
 
-Default PIN: `2115` (override with `LMS_PIN`).
+Default cohort PIN: `2115` (override with `LMS_PIN`).
+
+### Accounts and course access
+
+Login PINs are grouped into three tiers, resolved in `lib/members.ts`:
+
+| Tier | Configured by | Sees |
+| --- | --- | --- |
+| Admin (Sepnet owner) | `LMS_ADMIN_PIN` | Everything, including unreleased courses |
+| Staff (hand-out codes) | `LMS_STAFF_PINS` | Everything, including unreleased courses |
+| Cohort (learners) | `LMS_PIN`, defaults to `2115` | Released courses only; gated ones show as "Coming soon" |
+
+Admin and staff PINs are **read from the environment and never stored in this
+repository**. With `LMS_ADMIN_PIN` and `LMS_STAFF_PINS` unset, the cohort account
+is the only one that exists, so gated courses stay locked for everyone — set them
+in `.env.local` before handing out staff codes.
+
+A course is gated by `access: "staff"` in `lib/data.ts` — flip it to `"open"` (or
+remove the field) when its recordings are published. The tier is signed into the
+session cookie and enforced on the server in `app/(app)/learn/[courseId]/page.tsx`,
+so a learner cannot reach a locked player by typing the URL.
 
 ### Environment variables
 
@@ -36,7 +56,9 @@ cp .env.example .env.local
 
 | Variable | Purpose |
 | --- | --- |
-| `LMS_PIN` | 4-digit student PIN (server-side only) |
+| `LMS_PIN` | 4-digit cohort PIN (server-side only) |
+| `LMS_ADMIN_PIN` | 4-digit PIN for the Sepnet owner account; required for admin access |
+| `LMS_STAFF_PINS` | Comma-separated 4-digit staff PINs; required for staff access |
 | `LMS_SESSION_SECRET` | HMAC secret for the session cookie — **set a long random value in production** |
 
 ## 📁 Project structure

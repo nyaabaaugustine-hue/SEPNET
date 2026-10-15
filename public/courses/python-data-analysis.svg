@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="Python for Data Analysis course preview">
+  <defs>
+    <style>
+      .mono { font-family: 'JetBrains Mono','Fira Code','Courier New',monospace; }
+      .sans { font-family: 'Inter','Segoe UI',Helvetica,Arial,sans-serif; }
+      .prompt { fill: #d99a2b; font-size: 40px; font-weight: 700; }
+      .code { fill: #7d6a5e; font-size: 40px; }
+      .kw { fill: #b8502a; }
+      .lbl { fill: #a2917f; font-size: 22px; letter-spacing: 4px; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="#f2e8de"/>
+  <circle cx="1500" cy="70" r="200" fill="#e8d8c6"/>
+  <circle cx="60" cy="880" r="170" fill="#e8d8c6"/>
+
+  <text class="mono prompt" x="90" y="150">In [1]:</text>
+  <text class="mono code" x="290" y="150">df = pd.read_csv(<tspan class="kw">"scores.csv"</tspan>)</text>
+  <text class="mono prompt" x="90" y="255">In [2]:</text>
+  <text class="mono code" x="290" y="255">df.<tspan class="kw">groupby</tspan>(<tspan class="kw">"region"</tspan>).mean()</text>
+  <text class="mono prompt" x="90" y="360">In [3]:</text>
+  <text class="mono code" x="290" y="360">df.plot(kind=<tspan class="kw">"bar"</tspan>, color=<tspan class="kw">"orange"</tspan>)</text>
+
+  <g transform="translate(110,470)">
+    <rect x="0" y="0" width="150" height="26" rx="6" fill="#d5c0a9"/>
+    <rect x="170" y="0" width="240" height="26" rx="6" fill="#d5c0a9"/>
+    <rect x="0" y="52" width="110" height="26" rx="6" fill="#e3d3c1"/>
+    <rect x="170" y="52" width="200" height="26" rx="6" fill="#e3d3c1"/>
+    <rect x="0" y="104" width="140" height="26" rx="6" fill="#e3d3c1"/>
+    <rect x="170" y="104" width="250" height="26" rx="6" fill="#e3d3c1"/>
+    <rect x="0" y="156" width="90" height="26" rx="6" fill="#e3d3c1"/>
+    <rect x="170" y="156" width="170" height="26" rx="6" fill="#e3d3c1"/>
+    <rect x="0" y="208" width="130" height="26" rx="6" fill="#e3d3c1"/>
+    <rect x="170" y="208" width="220" height="26" rx="6" fill="#e3d3c1"/>
+  </g>
+
+  <g transform="translate(640,430)">
+    <rect x="0" y="0" width="860" height="380" rx="26" fill="#faf3ea" stroke="#dcc9b5" stroke-width="3"/>
+    <text class="sans lbl" x="44" y="58">ENROLMENT BY COHORT</text>
+    <line x1="44" y1="316" x2="816" y2="316" stroke="#dcc9b5" stroke-width="3"/>
+    <g>
+      <rect x="80" y="196" width="72" height="120" rx="10" fill="#c0562f"/>
+      <rect x="230" y="146" width="72" height="170" rx="10" fill="#d99a2b"/>
+      <rect x="380" y="226" width="72" height="90" rx="10" fill="#c0562f" opacity="0.5"/>
+      <rect x="530" y="106" width="72" height="210" rx="10" fill="#d99a2b"/>
+      <rect x="680" y="166" width="72" height="150" rx="10" fill="#c0562f"/>
+    </g>
+    <polyline points="116,156 266,106 416,186 566,66 716,126" fill="none" stroke="#4a3b32" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <g fill="#4a3b32">
+      <circle cx="116" cy="156" r="13"/>
+      <circle cx="266" cy="106" r="13"/>
+      <circle cx="416" cy="186" r="13"/>
+      <circle cx="566" cy="66" r="13"/>
+      <circle cx="716" cy="126" r="13"/>
+    </g>
+  </g>
+
+  <text class="mono" x="1480" y="825" fill="#b8a894" font-size="24" text-anchor="end" letter-spacing="6">SEPNET</text>
+</svg>

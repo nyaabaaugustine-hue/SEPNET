@@ -2,7 +2,8 @@ export interface Lesson {
   id: number;
   title: string;
   duration: string;
-  cloudinaryId: string;
+  /** Absent while a lesson is still awaiting its recording. */
+  cloudinaryId?: string;
   completed?: boolean;
 }
 
@@ -11,6 +12,14 @@ export interface SubCourse {
   title: string;
   description: string;
   lessons: Lesson[];
+}
+
+export type Tier = "student" | "staff" | "admin";
+
+export interface Account {
+  pin: string;
+  label: string;
+  tier: Tier;
 }
 
 export interface Course {
@@ -24,6 +33,8 @@ export interface Course {
   instructor: string;
   level?: string;
   thumbnail?: string;
+  /** "staff" hides a course from the cohort until it is released. */
+  access?: "open" | "staff";
   subCourses: SubCourse[];
 }
 

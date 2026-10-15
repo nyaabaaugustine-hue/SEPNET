@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import PinForm from "@/components/PinForm";
 import ThemeToggle from "@/components/ThemeToggle";
 import { LOGO_URL } from "@/lib/data";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
+import { SESSION_COOKIE, readSessionTier } from "@/lib/auth";
 
 export const metadata: Metadata = {
   title: "Login",
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function LoginPage() {
   const store = await cookies();
-  if (verifySessionToken(store.get(SESSION_COOKIE)?.value)) {
+  if (readSessionTier(store.get(SESSION_COOKIE)?.value)) {
     redirect("/courses");
   }
 

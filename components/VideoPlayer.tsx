@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { cloudinaryConfig } from "@/lib/cloudinary";
+import { cloudinaryConfig, encodePublicId } from "@/lib/cloudinary";
 
 const CVP_SRC =
   "https://cdn.jsdelivr.net/npm/cloudinary-video-player@1.10.6/dist/cld-video-player.min.js";
@@ -18,7 +18,7 @@ declare global {
 }
 
 interface VideoPlayerProps {
-  publicId: string;
+  publicId?: string;
   title: string;
   subtitle: string;
 }
@@ -46,8 +46,11 @@ function loadCvpScript(): Promise<void> {
   });
 }
 
+// The as-uploaded asset is already faststart + range addressable. Any transform
+// segment (q_auto/f_auto) makes Cloudinary transcode on first hit and serve the
+// result without byte ranges, which kills seeking and stalls the first play.
 function getVideoSrc(publicId: string) {
-  return `https://res.cloudinary.com/${cloudinaryConfig.cloudName}/video/upload/q_auto,f_auto/${publicId}.mp4`;
+  return `https://res.cloudinary.com/${cloudinaryConfig.cloudName}/video/upload/${encodePublicId(publicId)}.mp4`;
 }
 
 export default function VideoPlayer({ publicId, title, subtitle }: VideoPlayerProps) {
@@ -59,7 +62,7 @@ export default function VideoPlayer({ publicId, title, subtitle }: VideoPlayerPr
     let cancelled = false;
 
     async function init() {
-      if (!videoRef.current) return;
+      if (!publicId || !videoRef.current) return;
 
       videoRef.current.src = getVideoSrc(publicId);
       videoRef.current.controls = true;
@@ -118,24 +121,17 @@ export default function VideoPlayer({ publicId, title, subtitle }: VideoPlayerPr
             subtitle,
             description: `${subtitle} - ${title}`,
           },
-          transformation: {
-            width: 1920,
-            height: 1080,
-            crop: "limit",
-            quality: "auto",
-            fetch_format: "auto",
-          },
+          publicId,
+          sourceTypes: ["mp4"],
+          transformation: {},
           posterOptions: {
             transformation: {
               start_offset: cloudinaryConfig.thumbnailOffset,
-              width: 1920,
-              height: 1080,
-              crop: "fill",
+              width: 1280,
+              crop: "limit",
               quality: "auto",
-              fetch_format: "auto",
             },
           },
-          publicId,
         });
       } catch (error) {
         console.error("Error initializing Cloudinary player:", error);
@@ -158,6 +154,35 @@ export default function VideoPlayer({ publicId, title, subtitle }: VideoPlayerPr
       playerRef.current = null;
     };
   }, [publicId, title, subtitle]);
+
+  if (!publicId) {
+    return (
+      <div className="video-container">
+        <div className="video-unavailable">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none">
+            <rect
+              x="2.5"
+              y="5.5"
+              width="19"
+              height="13"
+              rx="2.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M10 9.5l4.5 2.5-4.5 2.5v-5z"
+              fill="currentColor"
+            />
+          </svg>
+          <h3>Recording coming soon</h3>
+          <p>
+            This lesson is part of the course plan. Its video will appear here
+            once it is published.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="video-container">

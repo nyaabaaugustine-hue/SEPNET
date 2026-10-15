@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LOGO_URL } from "@/lib/data";
+import { tierLabel } from "@/lib/access";
 import ThemeToggle from "./ThemeToggle";
+import type { Tier } from "@/types";
 
 const NAV_ITEMS = [
   {
@@ -97,11 +99,13 @@ const NAV_ITEMS = [
 interface SidebarProps {
   open: boolean;
   onClose: () => void;
+  tier: Tier;
 }
 
-export default function Sidebar({ open, onClose }: SidebarProps) {
+export default function Sidebar({ open, onClose, tier }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const badge = tierLabel(tier);
 
   function isActive(href: string): boolean {
     if (href === "/courses") {
@@ -149,6 +153,19 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         </nav>
 
         <div className="sidebar-footer">
+          {badge && (
+            <div className="tier-badge" title="This account can see unreleased courses">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6l7-3z"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span>{badge} access</span>
+            </div>
+          )}
           <button className="logout-btn" type="button" onClick={handleLogout}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <path

@@ -8,6 +8,7 @@ interface CourseCardProps {
   progress: number;
   totalLessons: number;
   index: number;
+  locked: boolean;
   onOpen: (course: Course) => void;
 }
 
@@ -16,15 +17,19 @@ export default function CourseCard({
   progress,
   totalLessons,
   index,
+  locked,
   onOpen,
 }: CourseCardProps) {
+  const firstTrailerId = course.subCourses
+    .flatMap((subCourse) => subCourse.lessons)
+    .find((lesson) => lesson.cloudinaryId)?.cloudinaryId;
+
   const thumbnail =
-    course.thumbnail ||
-    getVideoThumbnail(course.subCourses[0]?.lessons[0]?.cloudinaryId || "");
+    course.thumbnail || (firstTrailerId ? getVideoThumbnail(firstTrailerId) : "");
 
   return (
     <div
-      className="course-card"
+      className={`course-card${locked ? " locked" : ""}`}
       style={{ animationDelay: `${index * 0.05}s` }}
       role="button"
       tabIndex={0}
@@ -39,16 +44,41 @@ export default function CourseCard({
       <div className="course-thumbnail">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={thumbnail} alt={course.title} loading="lazy" />
-        <div className="play-overlay">
-          <div className="play-btn">
-            <svg viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z" />
-            </svg>
+        {locked ? (
+          <div className="play-overlay locked">
+            <div className="play-btn">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect
+                  x="5"
+                  y="11"
+                  width="14"
+                  height="9"
+                  rx="2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M8 11V7a4 4 0 018 0v4"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="play-overlay">
+            <div className="play-btn">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+        )}
       </div>
       <div className="course-content">
         <span className="course-category">{course.category}</span>
+        {locked && <span className="course-lock-chip">Coming soon</span>}
         <h3 className="course-title">{course.title}</h3>
         <div className="course-byline">
           <span>
@@ -87,8 +117,13 @@ export default function CourseCard({
             {totalLessons} lessons
           </span>
         </div>
-        <div className="progress-bar">
-          <div className="progress-fill" style={{ width: `${progress}%` }} />
+        <div className="progress-row">
+          <div className="progress-bar">
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
+          </div>
+          <span className="progress-label">
+            {progress > 0 ? `${progress}%` : "New"}
+          </span>
         </div>
       </div>
     </div>

@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  SESSION_COOKIE,
-  createSessionToken,
-  isValidPin,
-} from "@/lib/auth";
+import { SESSION_COOKIE, createSessionToken } from "@/lib/auth";
+import { accountForPin } from "@/lib/members";
 
 export async function POST(request: Request) {
   let pin: unknown;
@@ -17,15 +14,16 @@ export async function POST(request: Request) {
     );
   }
 
-  if (!isValidPin(pin)) {
+  const account = accountForPin(pin);
+  if (!account) {
     return NextResponse.json(
       { ok: false, error: "Invalid PIN. Please try again." },
       { status: 401 }
     );
   }
 
-  const response = NextResponse.json({ ok: true });
-  response.cookies.set(SESSION_COOKIE, createSessionToken(), {
+  const response = NextResponse.json({ ok: true, tier: account.tier });
+  response.cookies.set(SESSION_COOKIE, createSessionToken(account.tier), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

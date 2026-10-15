@@ -74,25 +74,6 @@ export function courseStats(
   };
 }
 
-export function overallStats(
-  courses: Course[],
-  completed: Set<string> | string[]
-): CourseStats {
-  const set = completed instanceof Set ? completed : new Set(completed);
-  let total = 0;
-  let done = 0;
-  courses.forEach((c) => {
-    const s = courseStats(c, set);
-    total += s.total;
-    done += s.done;
-  });
-  return {
-    total,
-    done,
-    progress: total ? Math.round((done / total) * 100) : 0,
-  };
-}
-
 export function loadStudentName(): string {
   if (typeof window === "undefined") return "";
   try {

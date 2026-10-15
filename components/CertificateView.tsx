@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
+  courseStats,
   loadCompletedLessons,
   loadStudentName,
-  overallStats,
   saveStudentName,
 } from "@/lib/progress";
 import { formatLongDate } from "@/lib/format";
@@ -13,10 +13,15 @@ import type { Course } from "@/types";
 
 interface CertificateViewProps {
   courses: Course[];
+  fullAccess?: boolean;
 }
 
-export default function CertificateView({ courses }: CertificateViewProps) {
+export default function CertificateView({
+  courses,
+  fullAccess = false,
+}: CertificateViewProps) {
   const [completed, setCompleted] = useState<string[]>([]);
+  const [pickedId, setPickedId] = useState<number | null>(null);
   const [name, setName] = useState("");
   const [certName, setCertName] = useState("");
   const [error, setError] = useState(false);
@@ -28,11 +33,25 @@ export default function CertificateView({ courses }: CertificateViewProps) {
     setReady(true);
   }, [courses]);
 
-  const stats = useMemo(
-    () => overallStats(courses, completed),
-    [courses, completed]
+  const completedSet = useMemo(() => new Set(completed), [completed]);
+  const progress = useMemo(
+    () =>
+      courses.map((course) => ({
+        course,
+        stats: courseStats(course, completedSet),
+      })),
+    [courses, completedSet]
   );
-  const primaryCourse = courses[0];
+
+  const isUnlocked = (entry: (typeof progress)[number]) =>
+    fullAccess || entry.stats.progress === 100;
+
+  // Default to a course the student has actually finished.
+  const activeCourse =
+    progress.find((p) => p.course.id === pickedId) ??
+    progress.find(isUnlocked) ??
+    progress[0];
+  const stats = activeCourse?.stats;
 
   function generate() {
     const trimmed = name.trim();
@@ -49,45 +68,74 @@ export default function CertificateView({ courses }: CertificateViewProps) {
     return <div className="empty-state">Loading certificate…</div>;
   }
 
-  if (stats.progress < 100 || !primaryCourse) {
-    return (
-      <div className="certificate-locked">
-        <div className="certificate-lock-icon">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
-            <rect
-              x="5"
-              y="11"
-              width="14"
-              height="9"
-              rx="2"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            />
-            <path
-              d="M8 11V7a4 4 0 018 0v4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-        <h3>Certificate Locked</h3>
-        <p>
-          Complete all lessons ({stats.done}/{stats.total}) to unlock your
-          certificate.
-        </p>
-        <div className="progress-bar certificate-progress">
-          <div className="progress-fill" style={{ width: `${stats.progress}%` }} />
-        </div>
-        <span className="certificate-progress-label">
-          {stats.progress}% complete
-        </span>
+  const picker =
+    courses.length > 1 ? (
+      <div className="certificate-picker">
+        <label htmlFor="certCourse">Course</label>
+        <select
+          id="certCourse"
+          value={activeCourse?.course.id ?? ""}
+          onChange={(e) => setPickedId(Number(e.target.value))}
+        >
+          {progress.map((p) => (
+            <option key={p.course.id} value={p.course.id}>
+              {p.course.title} — {p.stats.done}/{p.stats.total}
+            </option>
+          ))}
+        </select>
       </div>
+    ) : null;
+
+  if (!activeCourse || !stats || (!fullAccess && stats.progress < 100)) {
+    return (
+      <>
+        {picker}
+        <div className="certificate-locked">
+          <div className="certificate-lock-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <rect
+                x="5"
+                y="11"
+                width="14"
+                height="9"
+                rx="2"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path
+                d="M8 11V7a4 4 0 018 0v4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+          <h3>Certificate Locked</h3>
+          <p>
+            Finish every lesson in{" "}
+            <strong>{activeCourse?.course.title}</strong> to unlock its
+            certificate ({stats?.done ?? 0}/{stats?.total ?? 0} done).
+          </p>
+          <div className="progress-bar certificate-progress">
+            <div className="progress-fill" style={{ width: `${stats?.progress ?? 0}%` }} />
+          </div>
+          <span className="certificate-progress-label">
+            {stats?.progress ?? 0}% complete
+          </span>
+        </div>
+      </>
     );
   }
 
   return (
     <>
+      {picker}
+      {stats.progress < 100 && (
+        <p className="staff-preview-note">
+          Staff preview — {stats.done}/{stats.total} lessons completed. Learners
+          must finish every lesson to generate this certificate.
+        </p>
+      )}
       <div className="certificate-form">
         <label htmlFor="studentName">Your Full Name</label>
         <div className="certificate-form-row">
@@ -127,7 +175,7 @@ export default function CertificateView({ courses }: CertificateViewProps) {
               <p className="certificate-body">
                 for successfully completing the course
               </p>
-              <div className="certificate-course">{primaryCourse.title}</div>
+              <div className="certificate-course">{activeCourse.course.title}</div>
               <div className="certificate-footer">
                 <div className="certificate-field">
                   <div className="certificate-line">{formatLongDate()}</div>
