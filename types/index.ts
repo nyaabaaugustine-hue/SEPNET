@@ -4,6 +4,8 @@ export interface Lesson {
   duration: string;
   /** Absent while a lesson is still awaiting its recording. */
   cloudinaryId?: string;
+  /** Seconds into the video to grab the list poster when the default is blank. */
+  thumbOffset?: number;
   completed?: boolean;
 }
 

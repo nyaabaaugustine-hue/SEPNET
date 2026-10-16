@@ -13,6 +13,15 @@ export default function CourseLocked({ course }: { course: Course }) {
   return (
     <div className="content-area page active">
       <div className="course-locked">
+        {course.thumbnail && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="course-locked-cover"
+            src={course.thumbnail}
+            alt={`${course.title} course cover`}
+            loading="lazy"
+          />
+        )}
         <div className="course-locked-icon">
           <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <rect

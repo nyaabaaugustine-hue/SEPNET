@@ -12,6 +12,7 @@ export const courses: Course[] = [
     progress: 33,
     instructor: "Lavanya Vijayan",
     level: "Beginner",
+    thumbnail: "/courses/python-quick-start.webp",
     subCourses: [
       {
         id: 1,
@@ -55,6 +56,7 @@ export const courses: Course[] = [
             duration: "2m 54s",
             cloudinaryId:
               "Learn Python/03._Storing_data_using_variables_phsupd",
+            thumbOffset: 8,
             completed: false,
           },
         ],
@@ -309,7 +311,7 @@ export const courses: Course[] = [
     progress: 0,
     instructor: "Sepnet Mentor Team",
     level: "Beginner",
-    thumbnail: "/courses/python-data-analysis.svg",
+    thumbnail: "/courses/python-data-analysis.webp",
     access: "staff",
     subCourses: [
       {
@@ -449,7 +451,7 @@ export const courses: Course[] = [
     progress: 0,
     instructor: "Sepnet Mentor Team",
     level: "Intermediate",
-    thumbnail: "/courses/python-web-development.svg",
+    thumbnail: "/courses/python-web-development.webp",
     access: "staff",
     subCourses: [
       {
@@ -589,7 +591,7 @@ export const courses: Course[] = [
     progress: 0,
     instructor: "Sepnet Mentor Team",
     level: "Intermediate",
-    thumbnail: "/courses/python-automation.svg",
+    thumbnail: "/courses/python-automation.webp",
     access: "staff",
     subCourses: [
       {
@@ -729,7 +731,7 @@ export const courses: Course[] = [
     progress: 0,
     instructor: "Sepnet Mentor Team",
     level: "Intermediate",
-    thumbnail: "/courses/python-objects.svg",
+    thumbnail: "/courses/python-objects.webp",
     access: "staff",
     subCourses: [
       {

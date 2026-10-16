@@ -1200,23 +1200,58 @@ body.dark-mode .close-help {
     box-shadow: 0 4px 12px rgba(168, 84, 60, 0.15);
 }
 
-.lesson-number {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+.lesson-thumb {
+    position: relative;
+    width: 64px;
+    height: 40px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
     background: var(--gray-200);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--gray-700);
-    flex-shrink: 0;
 }
 
-.lesson-item.active .lesson-number {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-    color: var(--white);
+.lesson-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.lesson-index {
+    position: absolute;
+    left: 3px;
+    bottom: 3px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 5px;
+    background: rgba(15, 23, 42, 0.62);
+    color: #f8fafc;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* A lesson with no recording has no poster frame, so the number centres itself
+   in the dashed box instead of sitting on an image. */
+.lesson-thumb.empty {
+    border: 1px dashed var(--gray-400);
+    background: transparent;
+}
+
+.lesson-thumb.empty .lesson-index {
+    position: static;
+    background: none;
+    color: var(--gray-600);
+    font-size: 13px;
+}
+
+.lesson-item.active .lesson-thumb {
+    box-shadow: 0 0 0 2px var(--primary);
 }
 
 .lesson-info {
@@ -2986,8 +3021,8 @@ body.light-mode .login-container .footer-text {
 }
 
 .course-card.locked .course-thumbnail img {
-  filter: grayscale(0.75);
-  opacity: 0.6;
+  filter: grayscale(0.45) brightness(0.97);
+  opacity: 0.75;
 }
 
 .play-overlay.locked {
@@ -3060,10 +3095,22 @@ body.light-mode .login-container .footer-text {
   line-height: 1.6;
 }
 
+.course-locked-cover {
+  display: block;
+  width: 100%;
+  height: 172px;
+  margin-bottom: 24px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
 .course-locked-icon {
+  position: relative;
+  top: -46px;
   width: 64px;
   height: 64px;
-  margin: 0 auto 18px;
+  margin: 0 auto -28px;
+  border: 4px solid var(--white);
   border-radius: 50%;
   background: rgba(168, 84, 60, 0.12);
   color: var(--primary);

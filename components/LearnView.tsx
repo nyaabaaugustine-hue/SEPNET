@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import VideoPlayer from "./VideoPlayer";
+import { getLessonThumbnail } from "@/lib/cloudinary";
 import {
   courseStats,
   lessonKey,
@@ -202,8 +203,27 @@ export default function LearnView({ course, initialLessonId }: LearnViewProps) {
                           className={`lesson-item${active ? " active" : ""}`}
                           onClick={() => selectLesson(lesson.id)}
                         >
-                          <div className="lesson-number">
-                            {(entry?.index ?? 0) + 1}
+                          <div
+                            className={`lesson-thumb${
+                              lesson.cloudinaryId ? "" : " empty"
+                            }`}
+                          >
+                            {lesson.cloudinaryId ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={getLessonThumbnail(
+                                  lesson.cloudinaryId,
+                                  lesson.thumbOffset
+                                )}
+                                alt=""
+                                width={64}
+                                height={40}
+                                loading="lazy"
+                              />
+                            ) : null}
+                            <span className="lesson-index">
+                              {(entry?.index ?? 0) + 1}
+                            </span>
                           </div>
                           <div className="lesson-info">
                             <div className="lesson-title">{lesson.title}</div>

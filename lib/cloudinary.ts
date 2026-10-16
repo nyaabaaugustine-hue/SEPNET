@@ -18,3 +18,11 @@ export function getVideoThumbnail(
 ): string {
   return `https://res.cloudinary.com/${cloudinaryConfig.cloudName}/video/upload/so_${offset}/w_800,h_450,c_fill,q_auto,f_auto/${encodePublicId(cloudinaryId)}.jpg`;
 }
+
+// Poster frame sized for the lesson list, where ~28 of these load per course.
+export function getLessonThumbnail(
+  cloudinaryId: string,
+  offset: number = cloudinaryConfig.thumbnailOffset
+): string {
+  return `https://res.cloudinary.com/${cloudinaryConfig.cloudName}/video/upload/so_${offset}/w_160,h_90,c_fill,q_auto:good,f_auto/${encodePublicId(cloudinaryId)}.jpg`;
+}
